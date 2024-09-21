@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1150dcacda8e3e649b082af33df8a209, type: 3}
+  m_Name: TestPlant
+  m_EditorClassIdentifier: 
+  name: Test_Plant
+  description: This plant is for demo purposes.
+  plantSprite: {fileID: 209152939, guid: b7e61fe31b7a9994ba6b299de529eabe, type: 3}
