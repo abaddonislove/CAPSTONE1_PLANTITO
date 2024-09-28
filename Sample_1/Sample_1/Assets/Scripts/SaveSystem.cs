@@ -3,15 +3,25 @@ using System.IO;
 using UnityEngine;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine.SceneManagement;
+using UnityEditorInternal;
+using JetBrains.Annotations;
+using UnityEngine.Playables;
+using UnityEngine.Assertions.Must;
+using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.Serialization;
 
 public class SaveSystem : MonoBehaviour
 {
     [SerializeField]
     private PottedPlant plantPrefab;
+    [SerializeField]
+    private PlayerStats playerStatsPrefab;
     public static List<PottedPlant> plants = new List<PottedPlant>();
-
+    public static PlayerStats playerStats = new PlayerStats();
+    
     const string PLANTS_SUB = "/Plants";
     const string PLANTS_COUNT_SUB = "/Plants.count";
+    const string PLAYERSTATS_SUB = "/PlayerStats";
     public static SaveSystem Instance { get; private set; }
 
     private void Awake()
@@ -26,7 +36,9 @@ public class SaveSystem : MonoBehaviour
         // Set the instance to this instance of the class
         Instance = this;
 
+        GeneratePlayerStats();
         LoadPlant();
+        LoadPlayerStats();
     }
 
 /*    private void Awake()
@@ -37,6 +49,7 @@ public class SaveSystem : MonoBehaviour
     private void OnApplicationQuit()
     {
         SavePlants();   
+        SavePlayerStats();
     }
 
     public void SavePlants()
@@ -65,6 +78,7 @@ public class SaveSystem : MonoBehaviour
         BinaryFormatter formatter = new BinaryFormatter();
         string path = Application.persistentDataPath + PLANTS_SUB + SceneManager.GetActiveScene().buildIndex;
         string countPath = Application.persistentDataPath + PLANTS_COUNT_SUB + SceneManager.GetActiveScene().buildIndex;
+        
         int plantCount = 0;
 
         if (File.Exists(countPath))
@@ -98,6 +112,50 @@ public class SaveSystem : MonoBehaviour
             {
                 Debug.Log("Error! Path not found in " + path + i);
             }
+        }
+    }
+
+    public void SavePlayerStats()
+    {
+        BinaryFormatter formatter = new BinaryFormatter();
+        string playerStatsPath = Application.persistentDataPath + PLAYERSTATS_SUB + SceneManager.GetActiveScene().buildIndex;
+
+        FileStream playerStatsStream = new FileStream(playerStatsPath, FileMode.Create);
+        PlayerStatsData playerStatsData = new PlayerStatsData(playerStats);
+        formatter.Serialize(playerStatsStream, playerStatsData);
+        playerStatsStream.Close();
+    }
+
+    public void LoadPlayerStats()
+    {
+        BinaryFormatter formatter = new BinaryFormatter();
+
+        string playerStatsPath = Application.persistentDataPath + PLAYERSTATS_SUB + SceneManager.GetActiveScene().buildIndex;
+
+        if (File.Exists(playerStatsPath))
+        {
+            FileStream playerStatsStream = new FileStream(playerStatsPath, FileMode.Open);
+            PlayerStatsData data = formatter.Deserialize(playerStatsStream) as PlayerStatsData;
+            PlayerStats newPlayerStats = Instantiate(playerStatsPrefab);
+            playerStats = newPlayerStats;
+
+            Debug.Log(playerStatsPath + " " + data.money);
+            playerStats.SetMoney(data.money);
+            playerStats.SetDaysLived(data.daysLived);
+            playerStats.SetPlantsDiscovered(data.plantsDiscovered);
+            playerStats.SetResearchPoints(data.ResearchPoints);
+
+        }
+    }
+    
+    private void GeneratePlayerStats()
+    {
+        string playerStatsPath = Application.persistentDataPath + PLAYERSTATS_SUB + SceneManager.GetActiveScene().buildIndex;
+
+        if (!File.Exists(playerStatsPath))
+        {
+            PlayerStats newPlayerStats = Instantiate(playerStatsPrefab);
+            playerStats = newPlayerStats;
         }
     }
 }

@@ -33,6 +33,7 @@ public class SceneManagerScript : MonoBehaviour
     {
         if (SceneManager.GetActiveScene().buildIndex != 2)
         {
+            //SaveSystem.Instance.SavePlayerStats();
             SceneManager.LoadScene("GardenScene");
         }
     }
@@ -42,6 +43,7 @@ public class SceneManagerScript : MonoBehaviour
         if (SceneManager.GetActiveScene().buildIndex != 1)
         { 
             SaveSystem.Instance.SavePlants();
+            SaveSystem.Instance.SavePlayerStats();
             SceneManager.LoadScene("FirstScene");
         }
     }

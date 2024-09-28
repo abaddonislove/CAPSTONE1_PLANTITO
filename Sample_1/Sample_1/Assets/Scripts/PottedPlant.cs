@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,30 @@ public class PottedPlant : MonoBehaviour
 
     private GameObject potContainer;
     private GameObject plantContainer;
+    private int moneyValue;
+    private int health;
+    private int daysLived;
+
+    private enum GrowthStage
+    {
+        SEED,
+        SEEDLING,
+        VEGATIVE,
+        FLOWERING,
+        RIPENING,
+        DEAD
+    }
+
+    private enum PlantType
+    {
+        NONFLOWERING,
+        FLOWERING
+    }
+
+    [SerializeField]
+    private GrowthStage currentStage;
+    [SerializeField]
+    private PlantType plantType;
 
     private void Awake()
     {
